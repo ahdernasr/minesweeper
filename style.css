@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+}
+
+#homediv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#grid {
+    display: flex;
+    margin-top: 50%;
+}
+
+.el {
+    background-color: whitesmoke;
+    width: .75em;
+    height: .75em;
+    padding: .6em;
+    border: 0.1px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.el:hover {
+    opacity: 50%;
+}
+
+.hidden {
+    background-color: gray;
+    border: 0.1px solid whitesmoke;
+    z-index: 2;
+}
+
+.marked {
+    background-color: lightblue;
+    z-index: 2;
+}
+
+.bomb {
+    background-color: red;
+
+    padding: 0.5em;
+    z-index: 1;
+}
