@@ -1,14 +1,22 @@
 //TDL
-// DETETCING WIN
-// RESET 
+// RESET
 // DIFFICULTIES
 
-grid = document.getElementById("grid");
 rows = 14;
 cols = 18;
-bombs = 20;
+bombs = 30;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function createGrid() {
+  if (document.getElementById("homediv").children[1]) {
+    document.getElementById("homediv").children[1].remove();
+  }
+  grid = document.createElement("div");
+  grid.id = "grid";
+  document.getElementById("homediv").appendChild(grid);
   for (x = 0; x < cols; x++) {
     line = document.createElement("div");
     grid.appendChild(line);
@@ -19,7 +27,7 @@ function createGrid() {
         y: y,
         bomb: false,
         hidden: true,
-        rightClicked: false
+        rightClicked: false,
       };
       el.classList.add("el");
       el.classList.add("hidden");
@@ -33,29 +41,40 @@ function createGrid() {
   for (e of bombsArr) {
     e.value.bomb = true;
   }
-  eventHandler(false);
+  eventHandler()
 }
 
 elements = document.getElementsByClassName("el");
 rightClicked = false;
-function eventHandler(lost) {
-  if (!lost) {
-    for (e of elements) {
-      e.addEventListener("contextmenu", rClickHandler);
+function eventHandler() {
+  for (e of elements) {
+    e.addEventListener("contextmenu", rClickHandler);
 
-      e.addEventListener("click", lClickHandler);
-    }
+    e.addEventListener("click", lClickHandler);
   }
+
+  document.getElementById("reset").addEventListener("click", reset);
 }
 
-/////////////////////////STOP WATCH////////////////////
+function reset() {
+  clearInterval(myInterval);
+  stopwatch.textContent = "";
+  firstTime = true;
+  createGrid();
+}
 
 function rClickHandler(event) {
   event.preventDefault();
-  if (!event.target.closest(".el").rightClicked && event.target.closest(".el").classList.contains('hidden')) {
+  if (
+    !event.target.closest(".el").rightClicked &&
+    event.target.closest(".el").classList.contains("hidden")
+  ) {
     event.target.closest(".el").classList.add("marked");
     event.target.closest(".el").rightClicked = true;
-  } else if (event.target.closest(".el").rightClicked && event.target.closest(".el").classList.contains('hidden')) {
+  } else if (
+    event.target.closest(".el").rightClicked &&
+    event.target.closest(".el").classList.contains("hidden")
+  ) {
     event.target.closest(".el").classList.remove("marked");
     event.target.closest(".el").rightClicked = false;
   }
@@ -64,27 +83,30 @@ function rClickHandler(event) {
 stopwatch = document.getElementById("stopwatch");
 firstTime = true;
 function lClickHandler(event) {
+  if (event.target.closest(".el").classList.contains("marked")) return;
   reveal(event.target.closest(".el"));
   if (checkWin()) alert("You win!");
   if (firstTime) {
-    value = 0
+    value = 0;
     myInterval = setInterval(() => {
-      value+=1
-      stopwatch.textContent = `${value} s`
-    }, 1000)
+      value += 1;
+      stopwatch.textContent = `${value} s`;
+    }, 1000);
   }
   firstTime = false;
 }
 
-function reveal(el) {
+async function reveal(el) {
   if (el.value.bomb) {
+    lock();
+    el.classList.add("bomb");
     for (e of elements) {
       if (e.value.bomb) {
+        await sleep(250);
         e.classList.remove("hidden");
         e.classList.add("bomb");
       }
     }
-    lock();
     return;
   } else {
     el.classList.remove("hidden");
@@ -94,6 +116,30 @@ function reveal(el) {
   adj = findAdjacents(el);
   if (findBombCount(findAdjacents(el)) != 0) {
     el.textContent = findBombCount(adj);
+    if (el.textContent == 1) {
+        el.style.color = "blue";
+    }
+    else if (el.textContent == 2) {
+      el.style.color = "green";
+    }
+    else if (el.textContent == 3) {
+      el.style.color = "red";
+    }
+    else if (el.textContent == 4) {
+      el.style.color = "orange";
+    }
+    else if (el.textContent == 5) {
+      el.style.color = "darkred";
+    }
+    else if (el.textContent == 6) {
+      el.style.color = "purple";
+    }
+    else if (el.textContent == 7) {
+      el.style.color = "black";
+    }
+    else if (el.textContent == 8) {
+      el.style.color = "gray";
+    }
     return;
   }
 
@@ -187,23 +233,24 @@ function findBombCount(adjacents) {
 }
 
 function checkWin() {
+  explored = 0;
   for (e of elements) {
-    if (e.value.hidden || e.value.bomb) {
-      return false;
+    if (!e.value.hidden && !e.classList.contains("marked")) {
+      explored += 1;
+      if (explored == rows * cols - bombs) {
+        return true;
+      }
     }
   }
-  return true;
+  return false;
 }
 
 function lock() {
-  console.log("locking");
   for (e of elements) {
     e.removeEventListener("click", lClickHandler);
     e.removeEventListener("contextmenu", rClickHandler);
-    clearInterval(myInterval)
+    clearInterval(myInterval);
   }
 }
 
 createGrid();
-
-
