@@ -4,7 +4,7 @@
 
 rows = 14;
 cols = 18;
-bombs = 5;
+bombs = 25;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -61,6 +61,7 @@ function reset() {
   clearInterval(myInterval);
   stopwatch.textContent = "";
   firstTime = true;
+  recur = false;
   createGrid();
 }
 
@@ -86,7 +87,10 @@ firstTime = true;
 function lClickHandler(event) {
   if (event.target.closest(".el").classList.contains("marked")) return;
   reveal(event.target.closest(".el"));
-  if (checkWin()) resultMessage("Win");
+  if (checkWin()) {
+    lock();
+    resultMessage("Win");
+  }
   if (firstTime) {
     value = 0;
     myInterval = setInterval(() => {
@@ -102,13 +106,17 @@ async function reveal(el) {
     lock();
     el.classList.add("bomb");
     for (e of elements) {
-      if (e.value.bomb) {
-        await sleep(250);
-        e.classList.remove("hidden");
-        e.classList.add("bomb");
+      if (recur) {
+        if (e.value.bomb) {
+          e.classList.remove("hidden");
+          e.classList.add("bomb");
+          await sleep(250);
+        }
       }
     }
-    resultMessage("Lose");
+    if (recur) {
+      resultMessage("Lose");
+    }
     return;
   } else {
     el.classList.remove("hidden");
@@ -137,7 +145,8 @@ async function reveal(el) {
     }
     return;
   }
-
+  
+  recur = true;
   flood(el);
 }
 
@@ -253,8 +262,7 @@ createGrid();
 
 function resultMessage(result) {
   for (e of elements) {
-    e.style.border = "0.1px solid whitesmoke";
-    e.style.opacity = "50%";
+    e.classList.add("fadein");
   }
 
   message = document.createElement("h1");

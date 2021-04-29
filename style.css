@@ -60,16 +60,19 @@
 .resultGrid {
     display: flex;
     position: absolute;
-    top: 50%;  /* position the top  edge of the element at the middle of the parent */
-    left: 50%; /* position the left edge of the element at the middle of the parent */
+    top: 50%;
+    /* position the top  edge of the element at the middle of the parent */
+    left: 50%;
+    /* position the left edge of the element at the middle of the parent */
     transform: translate(-50%, -50%);
     background-color: whitesmoke;
     border-radius: 1rem;
     padding: 0 1rem 0 1rem;
     color: black;
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 25px;
-
+    transition: background-color .5s;
+    transition-timing-function: ease-in;
     word-wrap: break-word;
 }
 
@@ -85,6 +88,8 @@
     z-index: 2;
     font-weight: 700;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color .25s;
+    transition-timing-function: ease-in;
 }
 
 .el:hover {
@@ -100,10 +105,52 @@
 .marked {
     background-color: lightblue;
     z-index: 2;
+    transition: background-color .25s;
+    transition-timing-function: ease-in;
 }
 
 .bomb {
     background-color: red;
     width: .5em;
     height: .5em;
+    transition: background-color .25s;
+    transition-timing-function: ease-in;
+}
+
+.fadein {
+    opacity: 50%;
+    transition: opacity .5s;
+    transition-timing-function: ease-in;
+}
+
+.github-corner:hover .octo-arm {
+    animation: octocat-wave 560ms ease-in-out
+}
+
+@keyframes octocat-wave {
+
+    0%,
+    100% {
+        transform: rotate(0)
+    }
+
+    20%,
+    60% {
+        transform: rotate(-25deg)
+    }
+
+    40%,
+    80% {
+        transform: rotate(10deg)
+    }
+}
+
+@media (max-width:500px) {
+    .github-corner:hover .octo-arm {
+        animation: none
+    }
+
+    .github-corner .octo-arm {
+        animation: octocat-wave 560ms ease-in-out
+    }
 }
