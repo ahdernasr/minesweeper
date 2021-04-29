@@ -4,7 +4,7 @@
 
 rows = 14;
 cols = 18;
-bombs = 25;
+bombs = 30;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -145,7 +145,7 @@ async function reveal(el) {
     }
     return;
   }
-  
+
   recur = true;
   flood(el);
 }
