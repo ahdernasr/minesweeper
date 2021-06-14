@@ -4,7 +4,9 @@
 
 rows = 14;
 cols = 18;
-bombs = 30;
+bombs = 40;
+let recur,
+firstClick = true;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -91,6 +93,7 @@ function lClickHandler(event) {
     lock();
     resultMessage("Win");
   }
+  firstClick ? firstClick = false : null;
   if (firstTime) {
     value = 0;
     myInterval = setInterval(() => {
@@ -102,7 +105,7 @@ function lClickHandler(event) {
 }
 
 async function reveal(el) {
-  if (el.value.bomb) {
+  if (el.value.bomb && !firstClick) {
     lock();
     el.classList.add("bomb");
     for (e of elements) {
